@@ -1,0 +1,35 @@
+{
+  "name": "electron-editor-context-menu",
+  "version": "1.0.0",
+  "description": "Enable the native right-click menu in Electron.",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mixmaxhq/electron-editor-context-menu.git"
+  },
+  "keywords": [
+    "electron",
+    "context",
+    "menu",
+    "contextmenu",
+    "right-click",
+    "spell-check",
+    "spell",
+    "check"
+  ],
+  "author": "Jeff Wear <jeff@mixmax.com> (https://mixmax.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mixmaxhq/electron-editor-context-menu/issues"
+  },
+  "homepage": "https://github.com/mixmaxhq/electron-editor-context-menu#readme",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  }
+}
