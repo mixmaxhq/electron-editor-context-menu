@@ -13,8 +13,8 @@ var Menu = require('electron').Menu;
  *     misspelled, `false` if it is spelled correctly or is not text.
  *   @property {Array<String>=[]} spellingSuggestions - An array of suggestions
  *     to show to correct the misspelling. Ignored if `isMisspelled` is `false`.
- * @param {Array} mainTemplate - optional
- * @param {Object} suggestionsTemplate - optional
+ * @param {Array} mainTemplate - Optional. The template of always-present menu items.
+ * @param {Array} suggestionsTemplate - Optional. The template of spelling suggestion items.
  * @return {Menu}
  */
 var buildEditorContextMenu = function(selection, mainTemplate, suggestionsTemplate) {
