@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/mixmaxhq/electron-editor-context-menu#readme",
   "dependencies": {
-    "underscore": "^1.8.3"
+    "lodash.defaults": "^4.0.1",
+    "lodash.isempty": "^4.1.2"
   }
 }
