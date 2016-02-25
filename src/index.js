@@ -1,9 +1,68 @@
 var noop = function(){};
 var defaults = require('lodash.defaults');
 var isEmpty = require('lodash.isEmpty');
+var isFunction = require('lodash.isFunction');
+var isArray = require('lodash.isArray');
+var cloneDeep = require('lodash.cloneDeep');
 var BrowserWindow = require('electron').BrowserWindow;
 var Menu = require('electron').Menu;
 
+
+var DEFAULT_MAIN_TPL = [{
+  label: 'Undo',
+  role: 'undo'
+}, {
+  label: 'Redo',
+  role: 'redo'
+}, {
+  type: 'separator'
+}, {
+  label: 'Cut',
+  role: 'cut'
+}, {
+  label: 'Copy',
+  role: 'copy'
+}, {
+  label: 'Paste',
+  role: 'paste'
+}, {
+  label: 'Paste and Match Style',
+  click: function() {
+    BrowserWindow.getFocusedWindow().webContents.pasteAndMatchStyle();
+  }
+}, {
+  label: 'Select All',
+  role: 'selectall'
+}];
+
+var DEFAULT_SUGGESTIONS_TPL = [
+  {
+    label: 'No suggestions',
+    click: noop
+  }, {
+    type: 'separator'
+  }
+];
+
+/**
+ * if passed a function, invoke it and pass a clone of the default (for safe mutations)
+ * if passed an array, use as is
+ * otherwise, just return a clone of the default
+ * @param val {*}
+ * @param defaultVal {Array}
+ * @returns {Array}
+ */
+function getTemplate(val, defaultVal) {
+  if(isFunction(val)) {
+    return val(cloneDeep(defaultVal));
+  }
+  else if(isArray(val)) {
+    return val;
+  }
+  else {
+    return cloneDeep(defaultVal);
+  }
+}
 
 /**
  * Builds a context menu suitable for showing in a text editor.
@@ -13,54 +72,23 @@ var Menu = require('electron').Menu;
  *     misspelled, `false` if it is spelled correctly or is not text.
  *   @property {Array<String>=[]} spellingSuggestions - An array of suggestions
  *     to show to correct the misspelling. Ignored if `isMisspelled` is `false`.
- * @param {Array} mainTemplate - Optional. The template of always-present menu items.
- * @param {Array} suggestionsTemplate - Optional. The template of spelling suggestion items.
+ * @param {Function|Array} mainTemplate - Optional. If it's an array, use as is.
+ *    If it's a function, used to customize the template of always-present menu items.
+ *    Receives the default template as a parameter. Should return a template.
+ * @param {Function|Array} suggestionsTemplate - Optional. If it's an array, use as is.
+ *    If it's a function, used to customize the template of spelling suggestion items.
+ *    Receives the default suggestions template as a parameter. Should return a template.
  * @return {Menu}
  */
 var buildEditorContextMenu = function(selection, mainTemplate, suggestionsTemplate) {
-  var DEFAULT_MAIN_TPL = [{
-    label: 'Undo',
-    role: 'undo'
-  }, {
-    label: 'Redo',
-    role: 'redo'
-  }, {
-    type: 'separator'
-  }, {
-    label: 'Cut',
-    role: 'cut'
-  }, {
-    label: 'Copy',
-    role: 'copy'
-  }, {
-    label: 'Paste',
-    role: 'paste'
-  }, {
-    label: 'Paste and Match Style',
-    click: function() {
-      BrowserWindow.getFocusedWindow().webContents.pasteAndMatchStyle();
-    }
-  }, {
-    label: 'Select All',
-    role: 'selectall'
-  }];
-
-  var DEFAULT_SUGGESTIONS_TPL = [
-    {
-      label: 'No suggestions',
-      click: noop
-    }, {
-      type: 'separator'
-    }
-  ];
 
   selection = defaults({}, selection, {
     isMisspelled: false,
     spellingSuggestions: []
   });
 
-  var template = mainTemplate ? mainTemplate : DEFAULT_MAIN_TPL;
-  var suggestionsTpl = suggestionsTemplate ? suggestionsTemplate : DEFAULT_SUGGESTIONS_TPL;
+  var template = getTemplate(mainTemplate, DEFAULT_MAIN_TPL);
+  var suggestionsTpl = getTemplate(suggestionsTemplate, DEFAULT_SUGGESTIONS_TPL);
 
   if (selection.isMisspelled) {
     var suggestions = selection.spellingSuggestions;
