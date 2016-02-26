@@ -77,5 +77,6 @@ Copyright 2016 Mixmax, Inc., licensed under the MIT License.
 
 ## Release History
 
+* 1.1.0 Add the ability to customize the main template and the suggestions template.
 * 1.0.0 Initial release.
 
