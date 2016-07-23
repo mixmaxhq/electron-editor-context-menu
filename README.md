@@ -18,8 +18,7 @@ npm install electron-editor-context-menu --save
 ```js
 // In the renderer process:
 var remote = require('electron').remote;
-// `remote.require` since `Menu` is a main-process module.
-var buildEditorContextMenu = remote.require('electron-editor-context-menu');
+var buildEditorContextMenu = require('electron-editor-context-menu');
 
 window.addEventListener('contextmenu', function(e) {
   // Only show the context menu in text editors.
@@ -80,4 +79,3 @@ Copyright 2016 Mixmax, Inc., licensed under the MIT License.
 * 1.1.1 Fix compatibility with electron-builder
 * 1.1.0 Add the ability to customize the main template and the suggestions template.
 * 1.0.0 Initial release.
-
