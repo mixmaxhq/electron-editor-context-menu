@@ -1,0 +1,21 @@
+<html>
+<head>
+  <title>Example</title>
+</head>
+<body>
+
+  <p>In this renderer</p>
+  <textarea></textarea>
+
+  <p>In a Webview</p>
+  <webview
+    src="renderer.html"
+    preload="./preload.js"
+  ></webview>
+
+  <script>
+    require('./preload.js');
+  </script>
+
+</body>
+</html>
