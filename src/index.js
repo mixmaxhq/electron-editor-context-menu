@@ -1,14 +1,22 @@
-var noop = function(){};
-var defaults = require('lodash.defaults');
-var isEmpty = require('lodash.isempty');
-var isFunction = require('lodash.isfunction');
-var isArray = require('lodash.isarray');
-var cloneDeep = require('lodash.clonedeep');
-var BrowserWindow = require('electron').BrowserWindow;
-var Menu = require('electron').Menu;
+const noop = function(){};
+const defaults = require('lodash.defaults');
+const isEmpty = require('lodash.isempty');
+const isFunction = require('lodash.isfunction');
+const isArray = require('lodash.isarray');
+const cloneDeep = require('lodash.clonedeep');
+const electron = require('electron');
+const remote = electron.remote;
+const Menu = electron.Menu || remote.Menu;
+const webContents = electron.webContents;
 
+// this allows us to support users who remote.require this or users who run it
+// directly in the renderer
+const currentWebContents = (process.type === 'browser' ?
+  webContents.getFocusedWebContents() :
+  remote.getCurrentWebContents().webContents
+);
 
-var DEFAULT_MAIN_TPL = [{
+const DEFAULT_MAIN_TPL = [{
   label: 'Undo',
   role: 'undo'
 }, {
@@ -28,14 +36,14 @@ var DEFAULT_MAIN_TPL = [{
 }, {
   label: 'Paste and Match Style',
   click: function() {
-    BrowserWindow.getFocusedWindow().webContents.pasteAndMatchStyle();
+    currentWebContents.pasteAndMatchStyle();
   }
 }, {
   label: 'Select All',
   role: 'selectall'
 }];
 
-var DEFAULT_SUGGESTIONS_TPL = [
+const DEFAULT_SUGGESTIONS_TPL = [
   {
     label: 'No suggestions',
     click: noop
@@ -80,18 +88,18 @@ function getTemplate(val, defaultVal) {
  *    Receives the default suggestions template as a parameter. Should return a template.
  * @return {Menu}
  */
-var buildEditorContextMenu = function(selection, mainTemplate, suggestionsTemplate) {
+const buildEditorContextMenu = function(selection, mainTemplate, suggestionsTemplate) {
 
   selection = defaults({}, selection, {
     isMisspelled: false,
     spellingSuggestions: []
   });
 
-  var template = getTemplate(mainTemplate, DEFAULT_MAIN_TPL);
-  var suggestionsTpl = getTemplate(suggestionsTemplate, DEFAULT_SUGGESTIONS_TPL);
+  const template = getTemplate(mainTemplate, DEFAULT_MAIN_TPL);
+  const suggestionsTpl = getTemplate(suggestionsTemplate, DEFAULT_SUGGESTIONS_TPL);
 
   if (selection.isMisspelled) {
-    var suggestions = selection.spellingSuggestions;
+    const suggestions = selection.spellingSuggestions;
     if (isEmpty(suggestions)) {
       template.unshift.apply(template, suggestionsTpl);
     } else {
@@ -99,7 +107,7 @@ var buildEditorContextMenu = function(selection, mainTemplate, suggestionsTempla
         return {
           label: suggestion,
           click: function() {
-            BrowserWindow.getFocusedWindow().webContents.replaceMisspelling(suggestion);
+            currentWebContents.replaceMisspelling(suggestion);
           }
         };
       }).concat({
