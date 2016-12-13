@@ -9,12 +9,17 @@ const remote = electron.remote;
 const Menu = electron.Menu || remote.Menu;
 const webContents = electron.webContents;
 
-// this allows us to support users who remote.require this or users who run it
-// directly in the renderer
-const currentWebContents = (process.type === 'browser' ?
-  webContents.getFocusedWebContents() :
-  remote.getCurrentWebContents().webContents
-);
+/**
+ * this allows us to support users who remote.require this or users who run it
+ * directly in the renderer
+ * @returns {WebContents}
+ */
+function currentWebContents() {
+  return (process.type === 'browser' ?
+    webContents.getFocusedWebContents() :
+    remote.getCurrentWebContents()
+  );
+}
 
 const DEFAULT_MAIN_TPL = [{
   label: 'Undo',
@@ -36,7 +41,7 @@ const DEFAULT_MAIN_TPL = [{
 }, {
   label: 'Paste and Match Style',
   click: function() {
-    currentWebContents.pasteAndMatchStyle();
+    currentWebContents().pasteAndMatchStyle();
   }
 }, {
   label: 'Select All',
@@ -107,7 +112,7 @@ const buildEditorContextMenu = function(selection, mainTemplate, suggestionsTemp
         return {
           label: suggestion,
           click: function() {
-            currentWebContents.replaceMisspelling(suggestion);
+            currentWebContents().replaceMisspelling(suggestion);
           }
         };
       }).concat({
