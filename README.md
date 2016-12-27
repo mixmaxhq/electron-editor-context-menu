@@ -59,6 +59,21 @@ Get these suggestions when your [spell-check provider][setSpellCheckProvider] ru
 For a complete example using `electron-spell-check-provider`, see
 [here][spell-checker integration example].
 
+### Customizing the menu
+
+You can add or remove items to the menu, or replace it entirely, by providing
+`mainTemplate` and/or `suggestionsTemplate` parameters when building the menu:
+
+```js
+var menu = buildEditorContextMenu(selection, mainTemplate, suggestionsTemplate);
+```
+
+The `mainTemplate` parameter customizes the always-present menu items; the
+`suggestionsTemplate` parameter customizes the spelling suggestion items.
+Pass an array of items to replace the default items entirely; pass a function
+to add/remove/edit the default items. The function will be passed the default
+array of items as a parameter and should return an array of items.
+
 ## Credits
 
 Created by [Jeff Wear][Jeff Wear].
