@@ -10,6 +10,10 @@ This module enables the menu you'd expect, with optional
 ## Installation
 
 ```js
+yarn add electron-editor-context-menu
+```
+or
+```js
 npm install electron-editor-context-menu --save
 ```
 
